@@ -23,6 +23,8 @@ const userSchema = new mongoose.Schema(
       default: "null",
     },
     lastLoginAt: { type: Date, default: null },
+    sale: { type: String, default: '' },
+    saleHistory: [{ value: Number, date: { type: Date, default: Date.now } }],
   },
   { timestamps: true }
 );
