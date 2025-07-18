@@ -122,3 +122,47 @@ export const deleteUser = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
+// ---------------- GET USER SALE -------------------
+export const getUserSale = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
+    const user = await UserModel.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    return res.status(200).json({ success: true, sale: user.sale, saleHistory: user.saleHistory });
+  } catch (error) {
+    console.error('Get user sale error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+// ---------------- UPDATE USER SALE -------------------
+export const updateUserSale = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { sale } = req.body;
+    if (!id) {
+      return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
+    if (typeof sale !== 'number') {
+      return res.status(400).json({ success: false, message: 'Sale must be a number' });
+    }
+    const user = await UserModel.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    let newSaleString = user.sale ? user.sale + ',' + sale : String(sale);
+    user.sale = newSaleString;
+    user.saleHistory.push({ value: sale, date: new Date() });
+    await user.save();
+    return res.status(200).json({ success: true, sale: user.sale, saleHistory: user.saleHistory });
+  } catch (error) {
+    console.error('Update user sale error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
