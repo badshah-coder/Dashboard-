@@ -134,6 +134,7 @@ export const getUserSale = async (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
+    // Return all saleHistory fields (including new ones)
     return res.status(200).json({ success: true, sale: user.sale, saleHistory: user.saleHistory });
   } catch (error) {
     console.error('Get user sale error:', error);
@@ -145,7 +146,7 @@ export const getUserSale = async (req, res) => {
 export const updateUserSale = async (req, res) => {
   try {
     const { id } = req.params;
-    const { sale } = req.body;
+    const { sale, totalExpenses, netProfit, revenue } = req.body;
     if (!id) {
       return res.status(400).json({ success: false, message: 'User ID is required' });
     }
@@ -158,7 +159,13 @@ export const updateUserSale = async (req, res) => {
     }
     let newSaleString = user.sale ? user.sale + ',' + sale : String(sale);
     user.sale = newSaleString;
-    user.saleHistory.push({ value: sale, date: new Date() });
+    user.saleHistory.push({
+      value: sale,
+      date: new Date(),
+      totalExpenses: typeof totalExpenses === 'number' ? totalExpenses : 0,
+      netProfit: typeof netProfit === 'number' ? netProfit : 0,
+      revenue: typeof revenue === 'number' ? revenue : 0
+    });
     await user.save();
     return res.status(200).json({ success: true, sale: user.sale, saleHistory: user.saleHistory });
   } catch (error) {
