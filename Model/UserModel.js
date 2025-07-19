@@ -25,7 +25,13 @@ const userSchema = new mongoose.Schema(
     },
     lastLoginAt: { type: Date, default: null },
     sale: { type: String, default: '' },
-    saleHistory: [{ value: Number, date: { type: Date, default: Date.now } }],
+    saleHistory: [{
+      value: Number,
+      date: { type: Date, default: Date.now },
+      totalExpenses: { type: Number, default: 0 },
+      netProfit: { type: Number, default: 0 },
+      revenue: { type: Number, default: 0 }
+    }],
   },
   { timestamps: true }
 );
