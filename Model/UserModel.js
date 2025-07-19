@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: [
         "admin",
+        "manager",
         "Gerente",
         "Finanaceiro",
         "Engenharia",
